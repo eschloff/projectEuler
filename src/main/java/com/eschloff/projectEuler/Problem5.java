@@ -1,28 +1,55 @@
 package com.eschloff.projectEuler;
 
-//The sum of the squares of the first ten natural numbers is,
-//1^2 + 2^2 + ... + 10^2 = 385
-//The square of the sum of the first ten natural numbers is,
-//(1 + 2 + ... + 10)^2 = 55^2 = 3025
-//Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025 − 385 = 2640.
-//Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
+import java.util.ArrayList;
+import java.util.HashMap;
+
+//2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+//What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
 
 public class Problem5 {
 
+	public static ArrayList<Integer> primes = new ArrayList<Integer>();
+	
 	public static void main(String[] args) {
-		System.out.println(Math.abs(sumOfSquares(100) - squareOfSums(100)));
+		System.out.println(leastCommonMultiple(20));
 	}
 
-	public static int sumOfSquares(int n) {
-		int sum = 0;
-		for (int i=1; i<n; i++) {
-			sum += i*i;
+	public static int leastCommonMultiple(int n) {
+		HashMap<Integer,Integer> factors = new HashMap<Integer,Integer>();
+		for (int i=2; i<=n; i++) {
+			if (isPrime(i)) {
+				primes.add(i);
+				factors.put(i, 1);
+			} else {
+				int p = i;
+				for (int prime : primes) {
+					int m = 0;
+					while (p % prime == 0) {
+						m++;
+						p = p/prime;
+						
+					}
+					if (factors.get(prime) < m) {
+						factors.put(prime, m);
+					}
+				}
+			}
 		}
-		return sum;
+		int product = 1;
+		for (int factor : factors.keySet()) {
+			product = (int) (product*Math.pow(factor, factors.get(factor)));
+		}
+		return product;
 	}
 	
-	public static int squareOfSums(int n) {
-		int base = (n+1)*n/2;
-		return base*base;
+	public static boolean isPrime(int n) {
+		boolean isNotPrime = false;
+		for (int prime : primes) {
+			if (n % prime == 0) {
+				isNotPrime = true;
+				break;
+			}
+		}
+		return !isNotPrime;
 	}
 }
